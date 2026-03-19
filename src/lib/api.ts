@@ -1,5 +1,6 @@
 // Get API base URL from environment or default to deployed backend
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://healthcare-backend-4-0u1f.onrender.com';
+export const API_BASE =
+  import.meta.env.VITE_API_BASE_URL || 'https://healthcare-backend-6.onrender.com';
 
 // Log the API base URL for debugging (only in development)
 if (import.meta.env.DEV) {
