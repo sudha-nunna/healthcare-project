@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
+import { useBookAppointmentModal } from "@/components/BookAppointmentModalProvider";
 
 interface DoctorCardProps {
   id: string;
@@ -28,6 +29,7 @@ export const DoctorCard = ({
   availableToday,
 }: DoctorCardProps) => {
   const navigate = useNavigate();
+  const { openBookAppointment } = useBookAppointmentModal();
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer" onClick={() => navigate(`/doctor/${id}`)}>
@@ -74,7 +76,15 @@ export const DoctorCard = ({
                 <span className="text-xl font-semibold text-foreground">${fee}</span>
                 <span className="text-sm text-muted-foreground">consultation</span>
               </div>
-              <Button size="sm" className="gap-2">
+              <Button
+                size="sm"
+                className="gap-2"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  openBookAppointment({ _id: id, name, clinicName: location || "Clinic" });
+                }}
+              >
                 <Calendar className="h-4 w-4" />
                 Book
               </Button>

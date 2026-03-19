@@ -17,6 +17,11 @@ import PriceComparison from "./pages/PriceComparison";
 import Insurance from "./pages/Insurance";
 import UserProfile from "./pages/UserProfile";
 import EditProfile from "./pages/EditProfile";
+import DentistList from "./components/DentistList";
+import AdminPanel from "./components/AdminPanel";
+import { BookAppointmentModalProvider } from "@/components/BookAppointmentModalProvider";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const queryClient = new QueryClient();
 
@@ -28,22 +33,26 @@ const AppContent = () => {
     <>
       {!isAuthPage && <Navbar />}
       <div className={isAuthPage ? '' : 'pt-20 md:pt-24'}>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/book-appointment" element={<BookAppointment />} />
-          <Route path="/doctor/:id" element={<DoctorProfile />} />
-          <Route path="/comparison" element={<Comparison />} />
-          <Route path="/lab-tests" element={<LabTests />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/price-comparison" element={<PriceComparison />} />
-          <Route path="/insurance" element={<Insurance />} />
-          <Route path="/profile" element={<UserProfile />} />
-          <Route path="/profile/edit" element={<EditProfile />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <ErrorBoundary>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/book-appointment" element={<BookAppointment />} />
+            <Route path="/doctor/:id" element={<DoctorProfile />} />
+            <Route path="/comparison" element={<Comparison />} />
+            <Route path="/lab-tests" element={<LabTests />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/price-comparison" element={<PriceComparison />} />
+            <Route path="/insurance" element={<Insurance />} />
+            <Route path="/profile" element={<UserProfile />} />
+            <Route path="/profile/edit" element={<EditProfile />} />
+            <Route path="/dentists" element={<DentistList />} />
+            <Route path="/admin/dentist-appointments" element={<AdminPanel />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </ErrorBoundary>
       </div>
     </>
   );
@@ -55,7 +64,11 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AppContent />
+        <ThemeProvider>
+          <BookAppointmentModalProvider>
+            <AppContent />
+          </BookAppointmentModalProvider>
+        </ThemeProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

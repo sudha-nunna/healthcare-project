@@ -9,12 +9,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { toast } from "sonner";
+import { useBookAppointmentModal } from "@/components/BookAppointmentModalProvider";
 
 const SAVED_DOCTORS_KEY = "healthcompare_saved_doctors";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { openBookAppointment } = useBookAppointmentModal();
   const [savedProviders, setSavedProviders] = useState<Array<{ id: string; name: string; specialization: string; fee: number }>>(() => {
     try {
       const raw = localStorage.getItem(SAVED_DOCTORS_KEY);
@@ -190,7 +192,18 @@ const Dashboard = () => {
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="font-semibold">${provider.fee}</span>
-                      <Button size="sm" onClick={() => navigate(`/book-appointment?doctor=${provider.id}`)}>Book</Button>
+                      <Button
+                        size="sm"
+                        onClick={() =>
+                          openBookAppointment({
+                            _id: provider.id,
+                            name: provider.name,
+                            clinicName: provider.specialization || "Clinic",
+                          })
+                        }
+                      >
+                        Book
+                      </Button>
                     </div>
                   </div>
                 ))}

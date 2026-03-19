@@ -4,10 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import api, { testBackendConnection } from "@/lib/api";
+import { BookAppointment } from "@/components/BookAppointment";
 
 const Comparison = () => {
   const navigate = useNavigate();
   const [connectionTest, setConnectionTest] = useState<{success?: boolean, message?: string} | null>(null);
+  const [selected, setSelected] = useState<{ _id: string; name: string; clinicName: string } | null>(null);
   
   const { data, isLoading, error, refetch } = useQuery({ 
     queryKey: ["specialists", "cardiologists"], 
@@ -41,7 +43,7 @@ const Comparison = () => {
         setConnectionTest({
           success: result.success,
           message: result.success 
-            ? `Backend is reachable on port ${(window as any).API_BASE?.split(':').pop() || '4001'}`
+            ? `Backend is reachable on port ${(window as any).API_BASE?.split(':').pop() || '5000'}`
             : `Connection test failed: ${result.error}`
         });
       });
@@ -77,7 +79,12 @@ const Comparison = () => {
     ] : [],
     isRecommended: s.isRecommended || false,
     doctorId: s._id,
-    onBookClick: () => navigate(`/book-appointment?doctor=${doctor.doctorId}`),
+    onBookClick: () =>
+      setSelected({
+        _id: String(s._id || ""),
+        name: String(s.name || "Doctor"),
+        clinicName: String(s.hospital || s.location || "Clinic"),
+      }),
   }));
 
   return (
@@ -114,7 +121,7 @@ const Comparison = () => {
                 <p>Make sure:</p>
                 <ul className="list-disc list-inside text-left inline-block">
                   <li>Backend server is running (npm run dev in backend folder)</li>
-                  <li>Backend is on port 4001 (check backend/.env file)</li>
+                  <li>Backend is on port 5000 (check backend/.env file)</li>
                   <li>MongoDB is running and connected</li>
                 </ul>
               </div>
@@ -145,6 +152,13 @@ const Comparison = () => {
           </Button>
         </div>
       </div>
+
+      {selected && (
+        <BookAppointment
+          dentist={selected}
+          onClose={() => setSelected(null)}
+        />
+      )}
     </div>
   );
 };

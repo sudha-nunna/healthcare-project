@@ -7,12 +7,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import api from "@/lib/api";
+import { useBookAppointmentModal } from "@/components/BookAppointmentModalProvider";
 
 const today = () => new Date().toISOString().split("T")[0];
 
 const DoctorProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { openBookAppointment } = useBookAppointmentModal();
 
   const { data: specialistsData, isLoading } = useQuery({ queryKey: ["specialists"], queryFn: () => api.listSpecialists() });
   const specialist = ((specialistsData as any)?.specialists || []).find((s: any) => s._id === id);
@@ -207,7 +209,19 @@ const DoctorProfile = () => {
                   </div>
                 </div>
 
-                <Button className="w-full mb-3" size="lg" onClick={() => navigate(`/book-appointment?doctor=${id}`)}>
+                <Button
+                  className="w-full mb-3"
+                  size="lg"
+                  onClick={() => {
+                    const providerId = String(id || specialist?._id || "");
+                    if (!providerId) return;
+                    openBookAppointment({
+                      _id: providerId,
+                      name: specialist?.name || "Doctor",
+                      clinicName: specialist?.hospital || "Clinic",
+                    });
+                  }}
+                >
                   <Calendar className="h-4 w-4 mr-2" />
                   Book Appointment
                 </Button>

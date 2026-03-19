@@ -5,7 +5,7 @@ import { Input } from "./ui/input"
 import { Search, Heart, Menu, X } from "lucide-react"
 
 const Navbar = () => {
-  const [searchQuery, setSearchQuery] = useState("")
+  //const [searchQuery, setSearchQuery] = useState("")
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [currentUser, setCurrentUser] = useState<{ id?: string; name?: string; email?: string } | null>(null)
   const location = useLocation()
@@ -40,12 +40,6 @@ const Navbar = () => {
     navigate("/")
   }
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!searchQuery.trim()) return
-    navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`)
-    setIsMobileMenuOpen(false)
-  }
 
   const navLink = (path: string, label: string) => {
     const isActive = location.pathname === path;
@@ -81,21 +75,14 @@ const Navbar = () => {
               {navLink("/dashboard", "Dashboard")}
               {navLink("/price-comparison", "Prices")}
               {navLink("/insurance", "Insurance")}
+              {navLink("/dentists", "Dentists")}
+              {navLink("/admin/dentist-appointments", "Admin")}
             </nav>
           </div>
 
           {/* Right section - Search and Auth */}
           <div className="hidden md:flex items-center gap-3 flex-shrink-0">
-            <form onSubmit={handleSearch} className="relative w-48 lg:w-56">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/70 h-4 w-4" />
-              <Input
-                type="search"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-9 pl-9 bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:bg-white/30 focus:ring-2 focus:ring-white/50 focus:border-white/50 text-sm"
-              />
-            </form>
+          
             {currentUser ? (
               <div className="flex items-center gap-2">
                 <Link to="/profile" className="flex items-center gap-2 hover:opacity-90 min-w-0">
@@ -126,18 +113,9 @@ const Navbar = () => {
         {/* Mobile menu content */}
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-white/20 px-6 pb-4 bg-white/5 backdrop-blur">
-            <form onSubmit={handleSearch} className="relative mt-4">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/70 h-4 w-4" />
-              <Input
-                type="search"
-                placeholder="Search doctors, specialties..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 bg-white/20 border-white/30 text-white placeholder:text-white/70"
-              />
-            </form>
+            
             <nav className="mt-4 flex flex-col gap-1">
-              {[["/", "Home"], ["/comparison", "Compare"], ["/lab-tests", "Lab Tests"], ["/dashboard", "Dashboard"], ["/price-comparison", "Prices"], ["/insurance", "Insurance"]].map(([path, label]) => (
+              {[["/", "Home"], ["/comparison", "Compare"], ["/lab-tests", "Lab Tests"], ["/dashboard", "Dashboard"], ["/price-comparison", "Prices"], ["/insurance", "Insurance"], ["/dentists", "Dentists"], ["/admin/dentist-appointments", "Admin"]].map(([path, label]) => (
                 <Link key={path} onClick={() => setIsMobileMenuOpen(false)} to={path} className={`py-2.5 px-3 rounded-lg ${location.pathname === path ? "bg-white/30 text-white font-medium" : "text-white/90 hover:bg-white/20"}`}>{label}</Link>
               ))}
               {currentUser && <Link onClick={() => setIsMobileMenuOpen(false)} to="/profile" className="py-2.5 px-3 rounded-lg text-white/90 hover:bg-white/20">Profile</Link>}
